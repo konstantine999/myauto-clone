@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CarResource\Pages;
 use App\Filament\Resources\CarResource\RelationManagers;
 use App\Models\Car;
+use App\Models\CarModell;
+use App\Models\Category;
 use App\Models\InteriorMaterial;
+use App\Models\Manufacturer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -20,20 +23,123 @@ class CarResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'მანქანები';
+
+    protected static ?string $label = 'მანქანები ';
+
+
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Section::make([
+                    Forms\Components\Select::make('manufacturer_id')
+                        ->required()
+                        ->options(function () {
+                            return Manufacturer::pluck('name', 'id')->toArray();
+                        })
+                        ->label('მწარმოებელი')
+                        ->native(false)
+                        ->placeholder('მწარმოებელი')
+                        ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                            $set('model_id', null);
+                        })
+                        ->live(),
+                    Forms\Components\Select::make('model_id')
+                        ->required()
+                        ->label('მანქანის მოდელი')
+                        ->placeholder('მანქანის მოდელი')
+//                        ->hidden(function (callable $get) {
+//                            if ($get('manufacturer_id') === null) return true;
+//                            return false;
+//                        })
+                        ->options(function (callable $get) {
+                            return CarModell::where('manufacturer_id', $get('manufacturer_id'))->pluck('name', 'id');
+                        })
+                        ->native(false)
+                        ->disabledOn(true),
+                    Forms\Components\Select::make('category_id')
+                        ->required()
+                        ->options(function () {
+                            return Category::pluck('name', 'id')->toArray();
+                        })
+                        ->native(false)
+                        ->placeholder('კატეგორია')
+                        ->label('კატეგორია'),
+                    Forms\Components\DatePicker::make('manufacture_year')
+                        ->required()
+                        ->label('გამოშვების წელი')
+                        ->placeholder('გამოშვების წელი')
+                        ->native(false),
+                    Forms\Components\Select::make('cylinder_count')
+                        ->required()
+                        ->placeholder('ცილინდრების რაოდენობა')
+                        ->options([
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12
+                        ])
+                        ->label('ცილინდრების რაოდენობა')
+                        ->native(false),
+                    Forms\Components\Select::make('engine_size')
+                        ->required()
+                        ->options([
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12
+                        ])
+                        ->label('ძრავის მოცულობა')
+                        ->placeholder('ძრავის მოცულობა')
+                        ->native(false),
+//                    Forms\Components\Toggle::make('is_turbo')
+//                        ->required()
+//                        ->label('ტურბო'),
+                    Forms\Components\Select::make('airbag_count')
+                        ->required()
+                        ->options([
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            11,
+                            12
+                        ])
+                        ->label('აირბეგის რაოდენობა')
+                        ->native(false),
+                    Forms\Components\TextInput::make('mileage')
+                        ->required()
+                        ->placeholder('გარბენი')
+                        ->label('გარბენი')
+                        ->numeric(),
+                ])
+                ->columns(2),
 //                Forms\Components\TextInput::make('user_id')
-//                    ->required()
-//                    ->numeric(),
-//                Forms\Components\TextInput::make('manufacturer_id')
-//                    ->required()
-//                    ->numeric(),
-//                Forms\Components\TextInput::make('model_id')
-//                    ->required()
-//                    ->numeric(),
-//                Forms\Components\TextInput::make('category_id')
 //                    ->required()
 //                    ->numeric(),
 //                Forms\Components\TextInput::make('transmission_id')
@@ -45,46 +151,14 @@ class CarResource extends Resource
 //                Forms\Components\TextInput::make('color_id')
 //                    ->required()
 //                    ->numeric(),
-                Forms\Components\Select::make('სალონის მატერიალი')
+                Forms\Components\Select::make('interior_material')
                     ->required()
                     ->options(function () {
                         return InteriorMaterial::pluck('name', 'id')->toArray();
                     })
                     ->placeholder('სალონის მატერიალი')
+                    ->label('სალონის მატერიალი')
                     ->native(false),
-                Forms\Components\Select::make('ძრავის მოცულობა')
-                    ->required()
-                    ->options([
-                        1 => "Bmw"
-                    ])
-                    ->placeholder('ძრავის მოცულობა')
-                    ->native(false),
-                Forms\Components\Select::make('ცილინდრების რაოდენობა')
-                    ->required()
-                    ->placeholder('ცილინდრების რაოდენობა')
-                    ->options([
-                        1,
-                        2,
-                        3,
-                        4,
-                        5,
-                        6,
-                        7,
-                        8,
-                        9,
-                        10,
-                        11,
-                        12
-                    ])
-                    ->native(false),
-                Forms\Components\TextInput::make('airbag_count')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Toggle::make('is_turbo')
-                    ->required(),
-                Forms\Components\TextInput::make('mileage')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('mileage_dimension')
                     ->required()
                     ->maxLength(255),
@@ -99,8 +173,6 @@ class CarResource extends Resource
                     ->numeric(),
                 Forms\Components\Toggle::make('have_cats')
                     ->required(),
-                Forms\Components\DatePicker::make('manufacture_year')
-                    ->required(),
                 Forms\Components\Toggle::make('is_duty_paid')
                     ->required(),
                 Forms\Components\Toggle::make('is_inspection_passed')
@@ -113,6 +185,7 @@ class CarResource extends Resource
                     ->required()
                     ->maxLength(255),
             ]);
+
     }
 
     public static function table(Table $table): Table

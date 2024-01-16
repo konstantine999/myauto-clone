@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
             TransmissionSeeder::class,
             FuelTypeSeeder::class,
             CarColorSeeder::class,
-            InteriorMaterialSeeder::class
+            InteriorMaterialSeeder::class,
+            CarClassSeeder::class,
+            CarModellSeeder::class,
         ]);
     }
 }
