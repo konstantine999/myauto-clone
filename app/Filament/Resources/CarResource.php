@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CarResource\Pages;
 use App\Filament\Resources\CarResource\RelationManagers;
 use App\Models\Car;
+use App\Models\CarColors;
 use App\Models\CarModell;
 use App\Models\Category;
+use App\Models\FuelType;
 use App\Models\InteriorMaterial;
 use App\Models\Manufacturer;
+use App\Models\Transmission;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -32,6 +35,7 @@ class CarResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $userId = auth()->id();
         return $form
             ->schema([
                 Forms\Components\Section::make([
@@ -111,9 +115,6 @@ class CarResource extends Resource
                         ->label('ძრავის მოცულობა')
                         ->placeholder('ძრავის მოცულობა')
                         ->native(false),
-//                    Forms\Components\Toggle::make('is_turbo')
-//                        ->required()
-//                        ->label('ტურბო'),
                     Forms\Components\Select::make('airbag_count')
                         ->required()
                         ->options([
@@ -141,16 +142,32 @@ class CarResource extends Resource
                 ->columns(2),
 //                Forms\Components\TextInput::make('user_id')
 //                    ->required()
-//                    ->numeric(),
-//                Forms\Components\TextInput::make('transmission_id')
-//                    ->required()
-//                    ->numeric(),
-//                Forms\Components\TextInput::make('fuel_type')
-//                    ->required()
-//                    ->numeric(),
-//                Forms\Components\TextInput::make('color_id')
-//                    ->required()
-//                    ->numeric(),
+//                    ->default($userId)
+//                    ->hidden(),
+                Forms\Components\Select::make('transmission_id')
+                    ->required()
+                    ->options(function () {
+                        return Transmission::pluck('name', 'id')->toArray();
+                    })
+                    ->label('გადაცემათა კოლოფი')
+                    ->placeholder('გადაცემათა კოლოფი')
+                    ->native(false),
+                Forms\Components\Select::make('fuel_type')
+                    ->required()
+                    ->options(function () {
+                        return FuelType::pluck('name', 'id')->toArray();
+                    })
+                    ->label('საწვავის ტიპი')
+                    ->placeholder('საწვავის ტიპი')
+                    ->native(false),
+                Forms\Components\Select::make('color_id')
+                    ->required()
+                    ->options(function () {
+                        return CarColors::pluck('name', 'id')->toArray();
+                    })
+                    ->label('მანქანის ფერი')
+                    ->placeholder('მანქანის ფერი')
+                    ->native(false),
                 Forms\Components\Select::make('interior_material')
                     ->required()
                     ->options(function () {
@@ -159,30 +176,61 @@ class CarResource extends Resource
                     ->placeholder('სალონის მატერიალი')
                     ->label('სალონის მატერიალი')
                     ->native(false),
-                Forms\Components\TextInput::make('mileage_dimension')
+                Forms\Components\Select::make('mileage_dimension')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('steering_wheel_position')
+                    ->options([
+                        'კილომეტრი',
+                        'მილი'
+                    ])
+                    ->placeholder('გარბენის დიმენსია')
+                    ->label('გარბენის დიმენსია')
+                    ->native(false),
+                Forms\Components\Select::make('steering_wheel_position')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('drive')
+                    ->options([
+                        'მარჯვენა',
+                        'მარცხენა'
+                    ])
+                    ->placeholder('რულის პოზიცია')
+                    ->label('რულის პოზიცია')
+                    ->native(false),
+                Forms\Components\Select::make('drive')
                     ->required()
-                    ->maxLength(255),
+                    ->options([
+                        'წინა',
+                        'უკანა',
+                        '4X4'
+                    ])
+                    ->placeholder('წამყვანი თვლები')
+                    ->label('წამყვანი თვლები')
+                    ->native(false),
                 Forms\Components\TextInput::make('door_count')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->label('კარების რაოდენობა')
+                    ->placeholder('კარების რაოდენობა'),
                 Forms\Components\Toggle::make('have_cats')
-                    ->required(),
+                    ->required()
+                    ->label('კატალიზატორი'),
                 Forms\Components\Toggle::make('is_duty_paid')
-                    ->required(),
+                    ->required()
+                    ->label('განბაჟებული'),
+                Forms\Components\Toggle::make('is_turbo')
+                    ->required()
+                    ->label('ტურბო'),
                 Forms\Components\Toggle::make('is_inspection_passed')
-                    ->required(),
+                    ->required()
+                    ->label('ტექ დათვალირება'),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->numeric()
+                    ->label('ფასი')
+                    ->placeholder('ფასი')
                     ->prefix('$'),
                 Forms\Components\TextInput::make('description')
                     ->required()
+                    ->label('აღწერა')
+                    ->placeholder('აღწერა')
                     ->maxLength(255),
             ]);
 
