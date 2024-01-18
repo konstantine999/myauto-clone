@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('drive');
             $table->unsignedInteger('door_count');
             $table->boolean('have_cats');
-            $table->year('manufacture_year');
+            $table->integer('manufacture_year');
             $table->boolean('is_duty_paid');
             $table->boolean('is_inspection_passed');
             $table->unsignedInteger('price');

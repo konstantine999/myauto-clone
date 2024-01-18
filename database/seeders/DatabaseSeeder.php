@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             InteriorMaterialSeeder::class,
             CarClassSeeder::class,
             CarModellSeeder::class,
+            CarSeeder::class
         ]);
     }
 }

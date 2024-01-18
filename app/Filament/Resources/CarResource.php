@@ -36,6 +36,14 @@ class CarResource extends Resource
     public static function form(Form $form): Form
     {
         $userId = auth()->id();
+        $years = [];
+        $startYear = 1920;
+        $currentYear = date('Y');
+
+        for ($year = $currentYear; $year >= $startYear; $year--) {
+            $years[$year] = $year;
+        }
+
         return $form
             ->schema([
                 Forms\Components\Section::make([
@@ -72,8 +80,9 @@ class CarResource extends Resource
                         ->native(false)
                         ->placeholder('კატეგორია')
                         ->label('კატეგორია'),
-                    Forms\Components\DatePicker::make('manufacture_year')
+                    Forms\Components\Select::make('manufacture_year')
                         ->required()
+                        ->options($years)
                         ->label('გამოშვების წელი')
                         ->placeholder('გამოშვების წელი')
                         ->native(false),
@@ -81,18 +90,18 @@ class CarResource extends Resource
                         ->required()
                         ->placeholder('ცილინდრების რაოდენობა')
                         ->options([
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            11,
-                            12
+                            1 => 1,
+                            2 => 2,
+                            3 => 3,
+                            4 => 4,
+                            5 => 5,
+                            6 => 6,
+                            7 => 7,
+                            8 => 8,
+                            9 => 9,
+                            10 => 10,
+                            11 => 11,
+                            12 => 12
                         ])
                         ->label('ცილინდრების რაოდენობა')
                         ->native(false),
@@ -118,18 +127,18 @@ class CarResource extends Resource
                     Forms\Components\Select::make('airbag_count')
                         ->required()
                         ->options([
-                            1,
-                            2,
-                            3,
-                            4,
-                            5,
-                            6,
-                            7,
-                            8,
-                            9,
-                            10,
-                            11,
-                            12
+                            1 => 1,
+                            2 => 2,
+                            3 => 3,
+                            4 => 4,
+                            5 => 5,
+                            6 => 6,
+                            7 => 7,
+                            8 => 8,
+                            9 => 9,
+                            10 => 10,
+                            11 => 11,
+                            12 => 12
                         ])
                         ->label('აირბეგის რაოდენობა')
                         ->native(false),
@@ -179,8 +188,8 @@ class CarResource extends Resource
                 Forms\Components\Select::make('mileage_dimension')
                     ->required()
                     ->options([
-                        'კილომეტრი',
-                        'მილი'
+                        'კილომეტრი' => 'კილომეტრი',
+                        'მილი' => 'მილი'
                     ])
                     ->placeholder('გარბენის დიმენსია')
                     ->label('გარბენის დიმენსია')
@@ -188,8 +197,8 @@ class CarResource extends Resource
                 Forms\Components\Select::make('steering_wheel_position')
                     ->required()
                     ->options([
-                        'მარჯვენა',
-                        'მარცხენა'
+                        'მარჯვენა' => 'მარჯვენა',
+                        'მარცხენა' => 'მარცხენა'
                     ])
                     ->placeholder('რულის პოზიცია')
                     ->label('რულის პოზიცია')
@@ -197,9 +206,9 @@ class CarResource extends Resource
                 Forms\Components\Select::make('drive')
                     ->required()
                     ->options([
-                        'წინა',
-                        'უკანა',
-                        '4X4'
+                        'წინა' => 'წინა',
+                        'უკანა' => 'უკანა',
+                        '4X4' => '4X4'
                     ])
                     ->placeholder('წამყვანი თვლები')
                     ->label('წამყვანი თვლები')
