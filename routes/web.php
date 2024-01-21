@@ -14,3 +14,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [\App\Http\Controllers\CarController::class, 'showAllCars'])->name('welcome');
+Route::get('/car/{id}', [\App\Http\Controllers\CarController::class, 'getSingleCar'])->name('get.single.car');

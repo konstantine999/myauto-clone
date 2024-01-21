@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Car extends Model
+class Car extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     use HasFactory;
     protected $fillable = [
-        // Add other fields as needed
         'manufacturer_id',
         'model_id',
         'category_id',
@@ -32,7 +34,7 @@ class Car extends Model
         'price',
         'description',
         'manufacture_year',
-        'user_id', // Add user_id to the fillable array
+        'user_id',
     ];
     protected $guarded = ['id'];
 
@@ -40,9 +42,7 @@ class Car extends Model
     {
         parent::boot();
 
-        // Attach an event listener to set user_id before saving
         static::saving(function ($car) {
-            // Check if user_id is not already set
             if (!$car->user_id && auth()->check()) {
                 $car->user_id = auth()->id();
             }

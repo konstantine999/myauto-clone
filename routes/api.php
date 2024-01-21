@@ -17,3 +17,4 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/car/{id}', [\App\Http\Controllers\CarController::class, 'getSingleCar'])->name('get.single.car');

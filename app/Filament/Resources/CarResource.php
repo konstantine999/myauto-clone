@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CarResource\Pages;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\CarResource\RelationManagers;
 use App\Models\Car;
 use App\Models\CarColors;
@@ -35,7 +36,7 @@ class CarResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $userId = auth()->id();
+        $shownFileInputs = 1;
         $years = [];
         $startYear = 1920;
         $currentYear = date('Y');
@@ -241,6 +242,11 @@ class CarResource extends Resource
                     ->label('აღწერა')
                     ->placeholder('აღწერა')
                     ->maxLength(255),
+                    SpatieMediaLibraryFileUpload::make('cars')
+                        ->label('მანქანის ფოტო')
+                        ->collection('cars')
+                        ->multiple()
+                        ->reorderable(),
             ]);
 
     }
