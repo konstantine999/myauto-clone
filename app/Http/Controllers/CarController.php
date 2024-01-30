@@ -20,4 +20,13 @@ class CarController extends Controller
 //        dd($carMedia);
         return view('single_car', compact('car', 'carMedia'));
     }
+
+    public function carSearch(Request $request)
+    {
+        $results = Car::whereHas('manufacturer', function ($query) use ($request) {
+            $query->where('name', 'like', '%' . $request['search'] . '%');
+        })->get();
+
+        return response()->json($results);
+    }
 }

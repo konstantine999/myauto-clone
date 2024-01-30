@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Layouts\CustomLayout;
 use App\Filament\Resources\CarResource\Pages;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Filament\Resources\CarResource\RelationManagers;
@@ -15,11 +16,15 @@ use App\Models\Manufacturer;
 use App\Models\Transmission;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\View\ComponentSlot;
 
 class CarResource extends Resource
 {
@@ -244,6 +249,7 @@ class CarResource extends Resource
                     ->maxLength(255),
                     SpatieMediaLibraryFileUpload::make('cars')
                         ->label('მანქანის ფოტო')
+                        ->disk('public')
                         ->collection('cars')
                         ->multiple()
                         ->reorderable(),
@@ -259,6 +265,7 @@ class CarResource extends Resource
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('manufacturer_id')
+                    ->getRelationship( self::$model)
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('model_id')
@@ -339,11 +346,32 @@ class CarResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                ViewEntry::make('model_id')
+                    ->label('მოდელი')
+                    ->view('infolists.components.custom-entry', ),
+                ViewEntry::make('user_id')
+                    ->label('მოდელი')
+                    ->view('infolists.components.custom-entry', ),
+                ViewEntry::make('manufacturer_id')
+                    ->label('მწარმოებელი')
+                    ->view('infolists.components.custom-entry', ),
+
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
             //
         ];
+    }
+    public function model()
+    {
+        return $this->belongsTo(CarModell::class, 'model_id');
     }
 
     public static function getPages(): array

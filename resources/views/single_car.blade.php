@@ -12,6 +12,7 @@
     @vite('resources/css/app.css')
 </head>
 <body class="antialiased bg-gray-100">
+    @include('.components.header')
     <div class="max-w-[700px] mx-auto mt-[100px]">
         <div class="flex gap-[7px] items-center">
             <span class="text-black font-medium text-[24px]">{{ $car->manufacturer->name }}</span>
@@ -25,7 +26,7 @@
             <span class="ml-12px text-gray-500 text-[14px] ml-[7px]">562 ნახვა</span>
         </div>
         <div class="h-[517px] mt-[30px]">
-            <img src="{{$carMedia}}" alt="Toyota RAV 4" class="w-full h-full rounded-3xl object-cover">
+            <img src="{{$carMedia}}" alt="{{$car->manufacturer->name . ' ' . $car->model->name}}" class="w-full h-full rounded-3xl object-cover">
         </div>
         <div class="min-h-[200px] mt-[40px] bg-white rounded-2xl cursor-pointer">
             <h4 class="text-gray-800 font-medium font-size-14 font-size-sm-16 pt-4 pl-4">დეტალური აღწერა</h4>
