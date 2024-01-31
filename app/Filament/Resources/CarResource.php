@@ -16,7 +16,9 @@ use App\Models\Manufacturer;
 use App\Models\Transmission;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\View;
 use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -261,67 +263,93 @@ class CarResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\SpatieMediaLibraryImageColumn::class::make('images')
+                    ->label('ფოტო')
+                    ->collection('cars')
+                    ->limit(1),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('მომხმარებელი')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('manufacturer_id')
-                    ->getRelationship( self::$model)
+                Tables\Columns\TextColumn::make('manufacturer.name')
+                    ->label('მანქანის მწარმოებელი')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('model_id')
+                Tables\Columns\TextColumn::make('model.name')
+                    ->label('მანქანის მოდელი')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('category_id')
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('კატეგორია')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('transmission_id')
+                Tables\Columns\TextColumn::make('transmission.name')
+                    ->label('გადაცემათა კოლოფი')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('fuel_type')
+                Tables\Columns\TextColumn::make('fuel.name')
+                    ->label('საწვავის ტიპი')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('color_id')
+                Tables\Columns\TextColumn::make('color.name')
+                    ->label('მანქანის ფერი')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('interior_material')
+                Tables\Columns\TextColumn::make('interiorMaterial.name')
+                    ->label('ინტერიერის მატერიალი')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('engine_size')
+                    ->label('ძრავის მოცულობა')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('cylinder_count')
+                    ->label('ცილინრების რაოდენობა')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('airbag_count')
+                    ->label('ეირბეგის რაოდენობა')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_turbo')
+                    ->label('ტურბო')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('mileage')
+                    ->label('გარბენი')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('mileage_dimension')
+                    ->label('გარბენის დიმენსია')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('steering_wheel_position')
+                    ->label('საჭის პოზიცია')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('drive')
+                    ->label('ამძრავი თვლები')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('door_count')
+                    ->label('კარების რაოდენობა')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('have_cats')
+                    ->label('კატალიზატორი')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('manufacture_year')
+                    ->label('წარმოების წელი')
                     ->date()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_duty_paid')
+                    ->label('განბაჟება')
                     ->boolean(),
                 Tables\Columns\IconColumn::make('is_inspection_passed')
+                    ->label('ტექ დათვალიერება')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('price')
+                    ->label('ფასი')
                     ->money()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('description')
+                    ->label('აღწერა')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -350,16 +378,21 @@ class CarResource extends Resource
     {
         return $infolist
             ->schema([
-                ViewEntry::make('model_id')
-                    ->label('მოდელი')
-                    ->view('infolists.components.custom-entry', ),
-                ViewEntry::make('user_id')
-                    ->label('მოდელი')
-                    ->view('infolists.components.custom-entry', ),
-                ViewEntry::make('manufacturer_id')
-                    ->label('მწარმოებელი')
-                    ->view('infolists.components.custom-entry', ),
-
+                View::make('infolists.components.box'),
+//                SpatieMediaLibraryImageEntry::class::make('images')
+//                    ->label('ფოტო')
+//                    ->collection('cars')
+//                    ->columnSpan('full')
+//                    ->limit(1),
+//                ViewEntry::make('model.name')
+//                    ->label('მოდელი')
+//                    ->view('infolists.components.custom-entry', ),
+//                ViewEntry::make('user.name')
+//                    ->label('მომხმარებლის სახხელი')
+//                    ->view('infolists.components.custom-entry', ),
+//                ViewEntry::make('manufacturer.name')
+//                    ->label('მწარმოებელი')
+//                    ->view('infolists.components.custom-entry', ),
             ]);
     }
 
@@ -368,10 +401,6 @@ class CarResource extends Resource
         return [
             //
         ];
-    }
-    public function model()
-    {
-        return $this->belongsTo(CarModell::class, 'model_id');
     }
 
     public static function getPages(): array
